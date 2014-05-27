@@ -1,4 +1,12 @@
 #result {
-	font-size: 36px;
+	font-size: 72px;
 	font-family: 'Open Sans', sans-serif;
+}
+
+.good {
+	color: green;
+}
+
+.bad {
+	color: red;
 }
