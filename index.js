@@ -10,25 +10,61 @@ var div = '#result';
 var mean_div = '#mean';
 var median_div = "#median";
 
-var secret_number;
 
-function setClassInfo(url, secret_number) {
+function setClassInfo(description, url, secret_number) {
 	var params = {};
 	var key = url + ":secret_number";
-	params[key] = secret_number;
+	params[key] = secret_number;   // from url:"secret_number", get secret_number
+	params[description] = url;     // from description, get url
 
 	storageArea.set(params);
-
 }
 
-storageArea.clear();
 
-setClassInfo(url, '8855');
+			storageArea.clear();
+
+
+
+setClassInfo('CSE127', url, '8855');
 
 $(document).ready(function() {
-	$('#test').click(function() {
-		loadPage(url);
+
+	var pages = [];
+	storageArea.get(null, function(data) {
+
+		var $dropdown = $('<select>');
+
+		$dropdown.append($('<option>').attr({value: ''}).text('-- Select Class --'));
+
+		for(var key in data) {
+			if(key.indexOf(':secret_number') == -1) {
+				var $option = $('<option>');
+				$option.attr(
+					{value: key}
+				).text(key);
+
+				$dropdown.append($option);
+			}
+		}
+
+		$('#classes').empty();
+		$('#classes').append($dropdown);
+
+
+		$dropdown.on('change', function() {
+			var _class = $(this).val();
+
+			storageArea.get(_class, function(data) {
+				var url = data[_class];
+
+				loadPage(url);
+			});
+		});
+
 	});
+
+
+
 });
 
 function loadPage(url) {
@@ -36,7 +72,7 @@ function loadPage(url) {
 
 	storageArea.get(key, function(items) {
 
-		secret_number = items[key];
+		var secret_number = items[key];
 
 		getOverall(url, secret_number, div);
 		getMeanMedian(url, mean_div, median_div);
