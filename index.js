@@ -14,19 +14,14 @@ var secret_number;
 
 function setClassInfo(url, secret_number) {
 	var params = {};
-	var key = "secret_number";
+	var key = url + ":secret_number";
 	params[key] = secret_number;
 
 	storageArea.set(params);
-	storageArea.get(key, function(items) { console.log(items.secret_number); });
 
 }
 
-storageArea.set({'test': '8855'});
-
-storageArea.get('test', function(items) {
-	console.log(items.test);
-})
+storageArea.clear();
 
 setClassInfo(url, '8855');
 
@@ -37,11 +32,11 @@ $(document).ready(function() {
 });
 
 function loadPage(url) {
-	var key = "secret_number";
+	var key = url + ":secret_number";
 
 	storageArea.get(key, function(items) {
 
-		secret_number = items.secret_number;
+		secret_number = items[key];
 
 		getOverall(url, secret_number, div);
 		getMeanMedian(url, mean_div, median_div);
