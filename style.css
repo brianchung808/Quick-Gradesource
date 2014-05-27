@@ -23,3 +23,7 @@ body {
 #add_class {
 	float:right;
 }
+
+#overall {
+	cursor: pointer; 
+}

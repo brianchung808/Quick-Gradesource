@@ -22,14 +22,36 @@ function getOverall(URL, secret_number, div_id) {
 
 					$('#overall').text(grade);
 
-					if(parseFloat(grade.split('%')[0]) > 70.0) {
-						$('#overall').removeClass("bad");
-						$('#overall').addClass("good");
-					} else {
-						$('#overall').removeClass("good");
-						$('#overall').addClass("bad");
-					}
+					// get the mean to compare with overall
+					jQuery.get(URL + PAGES.stats, 
+						function(data) {
+							var $data = $(data);
+							var $rows = $data.find('tr');
 
+							$.each($rows, function(indx, val) {
+								var $col1 = $(val).children().first();
+								var target = $col1.text();
+
+								if('Mean:' == target) {
+									var mean = $(val).children().last().text();
+
+									if(parseFloat(grade.split('%')[0]) > parseFloat(mean)) {
+										$('#overall').removeClass("bad");
+										$('#overall').addClass("good");
+									} else {
+										$('#overall').removeClass("good");
+										$('#overall').addClass("bad");
+									}
+								}
+							});
+						}
+					);
+
+					// open course standings on click
+					$('#overall').on('click', function() {
+						var url = URL + PAGES.standings;
+						chrome.tabs.create({url: url});
+					});
 				}
 			});
 		}
