@@ -1,16 +1,19 @@
 var PAGES = {
 	home     : '/index.html',
 	standings: '/coursestand.html',
+	stats    : '/course.html',
 }
 
 var home_url = 'http://www.gradesource.com/reports/3965/25436/index.html';
 var arr = home_url.split('/'); arr.pop();
-var URL = arr.join('/');
+var url = arr.join('/');
 
 var secret_number = '8855';
-var div = '#result'
+var div = '#result';
+var mean_div = '#mean';
+var median_div = "#median";
 
-function getOverall(secret_number, div_id) {
+function getOverall(URL, secret_number, div_id) {
 	jQuery.get(URL + PAGES.standings, 
 		function(data) {
 			var $data = $(data);
@@ -23,7 +26,7 @@ function getOverall(secret_number, div_id) {
 				if(secret_number == target) {
 					var grade = $(val).children().last().text();
 					console.log(secret_number + " == " + target + ". Grade = " + grade);
-					
+
 					if(parseFloat(grade.split('%')[0]) > 70.0) {
 						$(div_id).addClass("good");
 					} else {
@@ -37,4 +40,32 @@ function getOverall(secret_number, div_id) {
 	);	
 }
 
-getOverall(secret_number, div);
+function getMeanMedian(URL, mean_div, median_div) {
+	jQuery.get(URL + PAGES.stats, 
+		function(data) {
+			var $data = $(data);
+			var $rows = $data.find('tr');
+
+			$.each($rows, function(indx, val) {
+				var $col1 = $(val).children().first();
+				var target = $col1.text();
+
+				if('Mean:' == target) {
+					var mean = $(val).children().last().text();
+					$(mean_div).append(mean + "%");
+				}
+
+				if('Median:' == target) {
+					var median = $(val).children().last().text();
+					$(median_div).append(median + "%");
+				}
+			});
+		}
+
+	);
+
+}
+
+getOverall(url, secret_number, div);
+getMeanMedian(url, mean_div, median_div);
+
