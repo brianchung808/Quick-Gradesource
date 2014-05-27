@@ -23,6 +23,7 @@
   },
 
   "permissions": [
-    "http://www.gradesource.com/*"
+    "http://www.gradesource.com/*",
+    "storage"
   ]
 }

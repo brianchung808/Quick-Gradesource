@@ -4,15 +4,6 @@ var PAGES = {
 	stats    : '/course.html',
 }
 
-var home_url = 'http://www.gradesource.com/reports/3965/25436/index.html';
-var arr = home_url.split('/'); arr.pop();
-var url = arr.join('/');
-
-var secret_number = '8855';
-var div = '#result';
-var mean_div = '#mean';
-var median_div = "#median";
-
 function getOverall(URL, secret_number, div_id) {
 	jQuery.get(URL + PAGES.standings, 
 		function(data) {
@@ -65,7 +56,4 @@ function getMeanMedian(URL, mean_div, median_div) {
 	);
 
 }
-
-getOverall(url, secret_number, div);
-getMeanMedian(url, mean_div, median_div);
 
