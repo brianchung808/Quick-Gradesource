@@ -36,10 +36,13 @@ function restore_options() {
 
       $row.append($('<td>').text(key));
 
-      var $del_link = $('<a>').text('Remove').attr({'href': '#', 'id': key});
-      $row.append($('<td>').html($del_link));
+      var $del_link = $('<a>').text('Remove').attr({'href': '#', 'id': 'delete_' + key});
+      var $edit_link = $('<a>').text('Edit').attr({'href': '#', 'id': 'edit_' + key});
 
+      $row.append($('<td>').html($del_link));
+      $row.append($('<td>').html($edit_link));
       $del_link.on('click', delete_class);
+      $edit_link.on('click', edit_class);
 
       $table.append($row);
 
@@ -51,12 +54,32 @@ function restore_options() {
 }
 
 function delete_class() {
-  var class_to_delete = $(this).attr('id');
+  var arr = $(this).attr('id').split('_');
+  var class_to_delete = arr.pop();
 
   console.log(class_to_delete);
 
   storageArea.remove(class_to_delete);
   restore_options();
+}
+
+function edit_class() {
+  var arr = $(this).attr('id').split('_');
+  var class_to_edit = arr.pop();
+
+  console.log(class_to_edit);
+
+  storageArea.get(class_to_edit, function(data) {
+    var info = data[class_to_edit];
+
+    $('#link').val(info[0]);
+    $('#name').val(class_to_edit);
+    $('#secret_number').val(info[1]);
+
+  });
+
+
+
 }
 
 

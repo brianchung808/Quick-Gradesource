@@ -9,10 +9,16 @@
 		padding:20px;
 	}
 
+	#add_form {
+		width:400px;
+	}
+
 	</style>
 </head>
 <body>
-<h1>Extremely Plain Options Page</h1>
+<div class="page-header">
+	<h1>Options <small>for Gradesource Extension</small></h1>
+</div>
 
 <div id="saved">
 	Saved Courses:
@@ -24,13 +30,20 @@
 
 
 Add a Gradesource Class:<br>
+<div id="add_form" class="input-group">
 
-<input type="text" placeholder="Gradesource Link" id="link"> <br>
-<input type="text" placeholder="Name of class" id="name"> <br>
-<input type="text" placeholder="Secret Number" id="secret_number"> <br>
+	<input type="text" class="form-control" placeholder="Gradesource Link" id="link"> <br>
+	<input type="text" class="form-control" placeholder="Name of class" id="name"> <br>
+	<input type="text" class="form-control" placeholder="Secret Number" id="secret_number"> <br>
 
-<div id="status"></div>
-<button id="add">Add Class</button>
+	<div class="btn-group btn-group-justified">
+		<div class="btn-group">
+			<button id="add" class="btn btn-default">Add Class</button>
+	 	</div>
+	</div>
+
+</div>
+
 
 
 <script src="jquery.min.js"></script>
