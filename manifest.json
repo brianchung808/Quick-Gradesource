@@ -6,13 +6,8 @@
 
   "browser_action": {
     "default_icon": "images/icon38.png",
-    "default_title": "Quick Gradesource",      // optional; shown in tooltip
-    "default_popup": "index.html"        // optional
-  },
-
-  "background": {
-    "persistent": false,
-    "scripts": ["jquery.min.js", "gradesource_scraper.js"]
+    "default_title": "Quick Gradesource", 
+    "default_popup": "index.html"
   },
 
   "permissions": [
