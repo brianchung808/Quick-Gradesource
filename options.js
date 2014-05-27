@@ -21,7 +21,7 @@ function save_options() {
 
   // save the class & clear the form
   setClassInfo(name, link, secret_number)
-  
+
   $('#link').val('');
   $('#name').val('');
   $('#secret_number').val('');
@@ -30,12 +30,13 @@ function save_options() {
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 function restore_options() {
-
+  $('#saved').empty();
   // load all stored classes into table
   storageArea.get(null, function(data) {
     $('#saved_table').remove();
     var $table = $('<table>').attr({'class': 'table table-bordered', 'id': 'saved_table'}).css({'width': '400px'});
 
+    var _count = 0;
     for(var key in data) {
       var $row = $('<tr>');
 
@@ -50,6 +51,11 @@ function restore_options() {
       $edit_link.on('click', edit_class);
 
       $table.append($row);
+      _count++;
+    }
+
+    if(_count == 0) {
+      $('#saved').append($('<strong>').text('None saved. Add some!'));
     }
 
     $('#saved').append($table);
