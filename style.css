@@ -1,6 +1,9 @@
-#result, #mean, #median {
-	font-size: 72px;
+* {
 	font-family: 'Open Sans', sans-serif;
+}
+
+.number {
+	font-size: 72px;
 }
 
 .good {
