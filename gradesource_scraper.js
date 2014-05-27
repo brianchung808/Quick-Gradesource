@@ -18,19 +18,16 @@ function getOverall(URL, secret_number, div_id) {
 					var grade = $(val).children().last().text();
 					console.log(secret_number + " == " + target + ". Grade = " + grade);
 
-					var $div = $('<div>')
-						.attr({'id': 'overall'})
-						.addClass("number")
-						.text(grade);
+					$('#overall').text(grade);
 
 					if(parseFloat(grade.split('%')[0]) > 70.0) {
-						$div.addClass("good");
+						$('#overall').removeClass("bad");
+						$('#overall').addClass("good");
 					} else {
-						$div.addClass("bad");
+						$('#overall').removeClass("good");
+						$('#overall').addClass("bad");
 					}
 
-					$("#overall").remove();
-					$(div_id).append($div);
 				}
 			});
 		}
@@ -50,25 +47,14 @@ function getMeanMedian(URL, mean_div, median_div) {
 				if('Mean:' == target) {
 					var mean = $(val).children().last().text();
 
-					var $div = $('<div>')
-					.attr({'id': 'mean_number'})
-					.addClass("number")
-					.text(mean + "%");
+					$('#mean_number').text(mean + "%");
 
-					$('#mean_number').remove();
-					$(mean_div).append($div);
 				}
 
 				if('Median:' == target) {
 					var median = $(val).children().last().text();
 
-					var $div = $('<div>')
-					.attr({'id': 'median_number'})
-					.addClass("number")
-					.text(median + "%");
-
-					$('#median_number').remove();
-					$(median_div).append($div);
+					$('#median_number').text(median + "%");
 				}
 			});
 		}

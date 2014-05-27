@@ -16,11 +16,9 @@ function setClassInfo(description, url, secret_number) {
 	storageArea.set(params);
 }
 
-			//storageArea.clear();
-
-			//setClassInfo('CSE127', url, '8855');
-
-			//setClassInfo('CSE190', 'http://www.gradesource.com/reports/3519/25440', '7076');
+//storageArea.clear();
+//setClassInfo('CSE127', url, '8855');
+//setClassInfo('CSE190', 'http://www.gradesource.com/reports/3519/25440', '7076');
 
 $(function() {
 

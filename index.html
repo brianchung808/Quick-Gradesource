@@ -3,6 +3,8 @@
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>	
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
 	<script src="jquery.min.js"></script>
 	<script src="gradesource_scraper.js"></script>
 
@@ -12,7 +14,7 @@
 </head>
 
 <body>
-	<div><h1>Gradesource</h1></div>
+	<div class="page-header"><h1>Quick <small>Gradesource</small></h1></div>
 
 	<a id="add_class" href="#">Add Class</a>
 	<div id="classes">
@@ -20,15 +22,15 @@
 	</div>
 
 	<div id="result">
-		Yours:
+		You: <div id="overall" class="number">----</div>
 	</div>
 
 	<div id="mean">
-		Mean:
+		Mean: <div id="mean_number" class="number">----</div>
 	</div>
 
 	<div id="median">
-		Median:
+		Median: <div id="median_number" class="number">----</div>
 	</div>
 </body>
 
