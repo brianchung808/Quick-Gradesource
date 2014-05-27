@@ -19,3 +19,7 @@ body {
 .bad {
 	color: red;
 }
+
+#add_class {
+	float:right;
+}

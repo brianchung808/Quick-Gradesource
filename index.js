@@ -1,33 +1,22 @@
 var storageArea = chrome.storage.sync;
 
-var home_url = 'http://www.gradesource.com/reports/3965/25436/index.html';
-var arr = home_url.split('/'); arr.pop();
-var url = arr.join('/');
-
 var div = '#result';
 var mean_div = '#mean';
 var median_div = "#median";
 
 function setClassInfo(description, url, secret_number) {
 	var params = {};
-
 	params[description] = [url, secret_number];
 
 	storageArea.set(params);
 }
 
-//storageArea.clear();
-//setClassInfo('CSE127', url, '8855');
-//setClassInfo('CSE190', 'http://www.gradesource.com/reports/3519/25440', '7076');
-
 $(function() {
-
 	$('#add_class').on('click', function() {
 		chrome.tabs.create({url: "options.html"});
 	});
 
 	storageArea.get(null, function(data) {
-
 		var $dropdown = $('<select>');
 
 		$dropdown.append($('<option>').attr({value: ''}).text('-- Select Class --'));
@@ -41,7 +30,6 @@ $(function() {
 			$dropdown.append($option);
 		}
 
-		$('#classes').empty();
 		$('#classes').append($dropdown);
 
 		$dropdown.on('change', function() {
@@ -64,8 +52,4 @@ function loadPage(description) {
 		getMeanMedian(url, mean_div, median_div);
 	});
 }
-
-
-
-
 
