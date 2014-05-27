@@ -2,6 +2,11 @@
 	font-family: 'Open Sans', sans-serif;
 }
 
+body {
+	padding: 10px;
+
+}
+
 .number {
 	font-size: 72px;
 }

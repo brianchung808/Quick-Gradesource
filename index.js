@@ -10,20 +10,31 @@ var median_div = "#median";
 
 function setClassInfo(description, url, secret_number) {
 	var params = {};
-	var key = url + ":secret_number";
-	params[key] = secret_number;   // from url:"secret_number", get secret_number
-	params[description] = url;     // from description, get url
+
+	params[description] = [url, secret_number];
 
 	storageArea.set(params);
 }
 
 			storageArea.clear();
 
+
+var a = ['CSE191', 'http://gradesource.com/wadadawdaw', '1239'];
+var params = {};
+params['test'] = a;
+storageArea.set(params);
+
+
+
 			setClassInfo('CSE127', url, '8855');
 
 			setClassInfo('CSE190', 'http://www.gradesource.com/reports/3519/25440', '7076');
 
-$(document).ready(function() {
+$(function() {
+
+	$('#add_class').on('click', function() {
+		chrome.tabs.create({url: "options.html"});
+	});
 
 	storageArea.get(null, function(data) {
 
@@ -32,14 +43,12 @@ $(document).ready(function() {
 		$dropdown.append($('<option>').attr({value: ''}).text('-- Select Class --'));
 
 		for(var key in data) {
-			if(key.indexOf(':secret_number') == -1) {
-				var $option = $('<option>');
-				$option.attr(
-					{value: key}
-				).text(key);
+			var $option = $('<option>');
+			$option.attr(
+				{value: key}
+			).text(key);
 
-				$dropdown.append($option);
-			}
+			$dropdown.append($option);
 		}
 
 		$('#classes').empty();
@@ -48,21 +57,18 @@ $(document).ready(function() {
 		$dropdown.on('change', function() {
 			var _class = $(this).val();
 
+			loadPage(_class);
 			storageArea.get(_class, function(data) {
-				var url = data[_class];
 
-				loadPage(url);
 			});
 		});
 	});
 });
 
-function loadPage(url) {
-	var key = url + ":secret_number";
-
-	storageArea.get(key, function(items) {
-
-		var secret_number = items[key];
+function loadPage(description) {
+	storageArea.get(description, function(items) {
+		var url = items[description][0];
+		var secret_number = items[description][1];
 
 		getOverall(url, secret_number, div);
 		getMeanMedian(url, mean_div, median_div);
