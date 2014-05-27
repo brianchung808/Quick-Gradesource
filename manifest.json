@@ -1,19 +1,12 @@
 {
   "manifest_version": 2,
 
-  "name": "GS",
-  "version": "0.0.1",
-  /*"icons": {
-    "128": "icon128.png"
-  },
-  */
+  "name": "Quick Gradesource",
+  "version": "0.0.2",
 
   "browser_action": {
-    "default_icon": {                    // optional
-      //"19": "images/icon19.png",           // optional
-      //"38": "images/icon38.png"            // optional
-    },
-    "default_title": "GS",      // optional; shown in tooltip
+    "default_icon": "images/icon38.png",
+    "default_title": "Quick Gradesource",      // optional; shown in tooltip
     "default_popup": "index.html"        // optional
   },
 
