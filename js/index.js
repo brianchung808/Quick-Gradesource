@@ -44,8 +44,47 @@ function loadPage(name) {
 		var url = items[name][0];
 		var secret_number = items[name][1];
 
-		getOverall(url, secret_number, div);
-		getMeanMedian(url, mean_div, median_div);
+		getOverall(url, secret_number, div, function(grade) {
+			$('#overall').text(grade);
+
+			// get the mean to compare with overall
+			jQuery.get(url + PAGES.stats, 
+				function(data) {
+					var $data = $(data);
+					var $rows = $data.find('tr');
+
+					$.each($rows, function(indx, val) {
+						var $col1 = $(val).children().first();
+						var target = $col1.text();
+
+						if('Mean:' == target) {
+							var mean = $(val).children().last().text();
+
+							if(parseFloat(grade.split('%')[0]) > parseFloat(mean)) {
+								$('#overall').removeClass("bad");
+								$('#overall').addClass("good");
+							} else {
+								$('#overall').removeClass("good");
+								$('#overall').addClass("bad");
+							}
+						}
+					});
+				}
+			);
+
+			// open course standings on click
+			$('#overall').on('click', function() {
+				chrome.tabs.create({url: url + PAGES.standings});
+			});
+		});
+		
+		getMeanMedian(url, mean_div, median_div, 
+			function(mean) {
+				$('#mean_number').text(mean + "%");
+
+			}, function(median) {
+				$('#median_number').text(median + "%");
+			});
 	});
 }
 
