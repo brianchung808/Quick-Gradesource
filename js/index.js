@@ -73,6 +73,7 @@ function loadPage(name) {
 			);
 
 			// open course standings on click
+			$('#overall').off();
 			$('#overall').on('click', function() {
 				chrome.tabs.create({url: url + PAGES.standings});
 			});
