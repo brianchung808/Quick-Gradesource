@@ -1,17 +1,16 @@
-var storageArea = chrome.storage.sync;
-
-var div = '#result';
-var mean_div = '#mean';
-var median_div = "#median";
-
-
 (function($) {
+	var storageArea = chrome.storage.sync;
+
+	var div = '#result';
+	var mean_div = '#mean';
+	var median_div = "#median";
+	var grade_default = '--------';
 
 	var Grades = Backbone.Model.extend({
 		defaults: {
-			overall: '----',
-			mean   : '----',
-			median : '----',
+			overall: grade_default,
+			mean   : grade_default,
+			median : grade_default,
 			url    : null
 		},
 
@@ -37,18 +36,17 @@ var median_div = "#median";
 	});
 
 	var GradeView = Backbone.View.extend({
-		id: 'grades',
+		el: $('#grades'),
+
+		events: {
+			'click #overall': 'openGradesource'
+		},
 
 		initialize: function() {
-			_.bindAll(this, 'render', 'setColors');
+			_.bindAll(this, 'render', 'openGradesource');
 
 			this.model = new Grades();
-			this.model.bind('change', this.render); // on any change, rerender view 
-
-			$('#add_class').on('click', function() {
-				chrome.tabs.create({url: "options.html"});
-			});
-
+			this.listenTo(this.model, 'change', this.render);
 			var self = this;
 
 			// load the dropdown with saved classes
@@ -77,58 +75,40 @@ var median_div = "#median";
 			});
 
 			this.render();
-		},
 
-		render: function() {
-			var grade  = this.model.get('overall');
-			var mean   = this.model.get('mean');
-			var median = this.model.get('median');
-			var url    = this.model.get('url');
-
-			var $overall = $('#overall');
-			$overall.text(grade + "%");
-			$('#mean_number').text(mean + "%");
-			$('#median_number').text(median + "%");
-
-			this.setColors();
-
-			// open course standings on click
-			$overall.off();
-			$overall.on('click', function() {
-				chrome.tabs.create({url: url + PAGES.standings});
+			// Listeners
+			$('#add_class').on('click', function() {
+				chrome.tabs.create({url: "options.html"});
 			});
 		},
 
-		setColors: function() {
-			var grade  = this.model.get('overall');
-			var mean   = this.model.get('mean');
-			var median = this.model.get('median');
-			var url    = this.model.get('url');
-			var $overall = $('#overall');
+		render: function() {
+			var overall  = this.model.get('overall');
+			var mean     = this.model.get('mean');
+			var median   = this.model.get('median');
+			var url      = this.model.get('url');
 
-			if(parseFloat(grade.split('%')[0]) > parseFloat(mean)) {
-				$overall.removeClass("bad");
-				$overall.addClass("good");
-			} else {
-				$overall.removeClass("good");
-				$overall.addClass("bad");
+			var $overall = $('#overall');
+			$overall.text(overall + "%");
+			$('#mean_number').text(mean + "%");
+			$('#median_number').text(median + "%");
+
+			if(!(_.every([overall, mean, median], isNaN))) {
+				if(parseFloat(overall) > parseFloat(mean)) {
+					$overall.removeClass("bad");
+					$overall.addClass("good");
+				} else {
+					$overall.removeClass("good");
+					$overall.addClass("bad");
+				}
 			}
+		},
+
+		openGradesource: function() {
+			chrome.tabs.create({url: this.model.get('url') + PAGES.standings});
 		}
 	});
 
 	var gradeView = new GradeView();
 
 })(jQuery);
-
-
-
-
-$(function() {
-
-});
-
-// given class name, load the percentages and such.
-function loadPage(name) {
-	
-}
-
