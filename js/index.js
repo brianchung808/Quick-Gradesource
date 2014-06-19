@@ -26,9 +26,9 @@
 				});
 				
 				getMeanMedian(url, mean_div, median_div,
-					function(mean) {
+					function meanCallback(mean) {
 						self.set('mean', mean);
-					}, function(median) {
+					}, function medianCallback(median) {
 						self.set('median', median);
 					});
 			});
@@ -39,7 +39,8 @@
 		el: $('#grades'),
 
 		events: {
-			'click #overall': 'openGradesource'
+			'click #overall': 'openGradesource',
+			'click #add_class': 'openOptions'
 		},
 
 		initialize: function() {
@@ -75,11 +76,6 @@
 			});
 
 			this.render();
-
-			// Listeners
-			$('#add_class').on('click', function() {
-				chrome.tabs.create({url: "options.html"});
-			});
 		},
 
 		render: function() {
@@ -106,6 +102,10 @@
 
 		openGradesource: function() {
 			chrome.tabs.create({url: this.model.get('url') + PAGES.standings});
+		},
+
+		openOptions: function() {
+			chrome.tabs.create({url: "options.html"});
 		}
 	});
 
