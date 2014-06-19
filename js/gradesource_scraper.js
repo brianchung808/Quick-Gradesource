@@ -2,13 +2,13 @@ var PAGES = {
 	home     : '/index.html',
 	standings: '/coursestand.html',
 	stats    : '/course.html',
-}
+};
 
 // Get the overall score for the specified secret number for the
 // class at the specified url.
 // Replace the div_id with the grade
 function getOverall(URL, secret_number, div_id, callback) {
-	jQuery.get(URL + PAGES.standings, 
+	jQuery.get(URL + PAGES.standings,
 		function(data) {
 			var $data = $(data);
 			var $rows = $data.find('tr');
@@ -19,6 +19,7 @@ function getOverall(URL, secret_number, div_id, callback) {
 
 				if(secret_number == target) {
 					var grade = $(val).children().last().text();
+					grade = grade.substr(0, grade.length-1);
 
 					// do something with the grade
 					callback(grade);
@@ -26,13 +27,13 @@ function getOverall(URL, secret_number, div_id, callback) {
 				}
 			});
 		}
-	);	
+	);
 }
 
 // Get the mean and median score for the class at the specified url.
 // Replace the mean_div and median_div with the grade
 function getMeanMedian(URL, mean_div, median_div, mean_callback, median_callback) {
-	jQuery.get(URL + PAGES.stats, 
+	jQuery.get(URL + PAGES.stats,
 		function(data) {
 			var $data = $(data);
 			var $rows = $data.find('tr');

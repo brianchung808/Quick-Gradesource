@@ -1,88 +1,126 @@
-var storageArea = chrome.storage.sync;
+(function($) {
+	var storageArea = chrome.storage.sync;
 
-var div = '#result';
-var mean_div = '#mean';
-var median_div = "#median";
+	var div = '#result';
+	var mean_div = '#mean';
+	var median_div = "#median";
+	var grade_default = '--------';
+	var select_default = '-- Select Class --';
 
-$(function() {
-	$('#add_class').on('click', function() {
-		chrome.tabs.create({url: "options.html"});
-	});
+	var Grades = Backbone.Model.extend({
+		defaults: {
+			overall: grade_default,
+			mean   : grade_default,
+			median : grade_default,
+			url    : null
+		},
 
-	// load the dropdown with saved classes
-	storageArea.get(null, function(data) {
-		var $dropdown = $('<select>');
+		initialize: function() {
+			_.bindAll(this, 'getGrades');
+		},
 
-		$dropdown.append($('<option>').attr({value: ''}).text('-- Select Class --'));
+		getGrades: function(name) {
+			var self = this;
+			if(name == select_default) {
+				this.set(this.defaults);
+				return;
+			}
+			storageArea.get(name, function(items) {
+				var url = items[name][0];
+				var secret_number = items[name][1];
+				self.set('url', url);
 
-		for(var key in data) {
-			var $option = $('<option>');
-			$option.attr({
-				value: key
-			}).text(key);
-
-			$dropdown.append($option);
-		}
-
-		$('#classes').append($dropdown);
-
-		// load page with selected class
-		$dropdown.on('change', function() {
-			var _class = $(this).val();
-			loadPage(_class);
-		});
-	});
-});
-
-// given class name, load the percentages and such.
-function loadPage(name) {
-	storageArea.get(name, function(items) {
-		var url = items[name][0];
-		var secret_number = items[name][1];
-
-		getOverall(url, secret_number, div, function(grade) {
-			var $overall = $('#overall');
-			$overall.text(grade);
-
-			// get the mean to compare with overall
-			jQuery.get(url + PAGES.stats, 
-				function(data) {
-					var $data = $(data);
-					var $rows = $data.find('tr');
-
-					$.each($rows, function(indx, val) {
-						var $col1 = $(val).children().first();
-						var target = $col1.text();
-
-						if('Mean:' == target) {
-							var mean = $(val).children().last().text();
-
-							if(parseFloat(grade.split('%')[0]) > parseFloat(mean)) {
-								$overall.removeClass("bad");
-								$overall.addClass("good");
-							} else {
-								$overall.removeClass("good");
-								$overall.addClass("bad");
-							}
-						}
+				getOverall(url, secret_number, div, function(grade) {
+					self.set('overall', grade);
+				});
+				
+				getMeanMedian(url, mean_div, median_div,
+					function meanCallback(mean) {
+						self.set('mean', mean);
+					}, function medianCallback(median) {
+						self.set('median', median);
 					});
-				}
-			);
-
-			// open course standings on click
-			$overall.off();
-			$overall.on('click', function() {
-				chrome.tabs.create({url: url + PAGES.standings});
 			});
-		});
-		
-		getMeanMedian(url, mean_div, median_div, 
-			function(mean) {
-				$('#mean_number').text(mean + "%");
-
-			}, function(median) {
-				$('#median_number').text(median + "%");
-			});
+		}
 	});
-}
 
+	var GradeView = Backbone.View.extend({
+		el: $('#grades'),
+
+		events: {
+			'click #overall': 'openGradesource',
+			'click #add_class': 'openOptions'
+		},
+
+		initialize: function() {
+			_.bindAll(this, 'render', 'openGradesource');
+
+			this.model = new Grades();
+			this.listenTo(this.model, 'change', this.render);
+			var self = this;
+
+			// load the dropdown with saved classes
+			storageArea.get(null, function(data) {
+				var $dropdown = $('<select>');
+
+				$dropdown.append($('<option>').attr({value: select_default}).text(select_default));
+
+				_.each(data, function(value, key, list) {
+					var $option = $('<option>');
+					$option.attr({
+						value: key
+					}).text(key);
+
+					$dropdown.append($option);
+				});
+
+				$('#grades #classes').append($dropdown);
+
+				// load page with selected class
+				$dropdown.on('change', function() {
+					var _class = $(this).val();
+
+					self.model.getGrades(_class);
+				});
+			});
+
+			this.render();
+		},
+
+		render: function() {
+			var overall  = this.model.get('overall');
+			var mean     = this.model.get('mean');
+			var median   = this.model.get('median');
+			var url      = this.model.get('url');
+
+			var $overall = $('#overall');
+			$overall.text(overall + "%");
+			$('#mean_number').text(mean + "%");
+			$('#median_number').text(median + "%");
+
+			if(!(_.every([overall, mean, median], isNaN))) {
+				if(parseFloat(overall) > parseFloat(mean)) {
+					$overall.removeClass("bad");
+					$overall.addClass("good");
+				} else {
+					$overall.removeClass("good");
+					$overall.addClass("bad");
+				}
+			} else {
+				$overall.removeClass("bad");
+				$overall.removeClass("good");
+			}
+		},
+
+		openGradesource: function() {
+			chrome.tabs.create({url: this.model.get('url') + PAGES.standings});
+		},
+
+		openOptions: function() {
+			chrome.tabs.create({url: "options.html"});
+		}
+	});
+
+	var gradeView = new GradeView();
+
+})(jQuery);

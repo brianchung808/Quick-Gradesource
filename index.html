@@ -5,28 +5,36 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
-	<script src="js/jquery.min.js"></script>
-	<script src="js/gradesource_scraper.js"></script>
-	<script src="js/index.js"></script>
+
 </head>
 
 <body>
 	<div class="page-header"><h1>Quick <small>Gradesource</small></h1></div>
 
-	<div id="classes">
-		<a id="add_class" href="#">Add Classes</a>
-	</div> <br>
+	<div id="grades">
+		<div id="classes">
+			<a id="add_class" href="#">Add Classes</a>
+		</div> <br>
 
-	<div id="result">
-		You: <div id="overall" class="number">----</div>
+		<div id="result">
+			You: <div id="overall" class="number">----</div>
+		</div>
+
+		<div id="mean">
+			Mean: <div id="mean_number" class="number">----</div>
+		</div>
+
+		<div id="median">
+			Median: <div id="median_number" class="number">----</div>
+		</div>
 	</div>
 
-	<div id="mean">
-		Mean: <div id="mean_number" class="number">----</div>
-	</div>
 
-	<div id="median">
-		Median: <div id="median_number" class="number">----</div>
-	</div>
 </body>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/underscore-min.js"></script>
+<script src="js/backbone-min.js"></script>
+<script src="js/gradesource_scraper.js"></script>
+<script src="js/index.js"></script>
 </html>

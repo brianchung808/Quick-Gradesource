@@ -1,92 +1,97 @@
-var storageArea = chrome.storage.sync;
+(function($) {
+  var storageArea = chrome.storage.sync;
 
-// save the information
-function setClassInfo(name, url, secret_number) {
-  var params = {};
-  params[name] = [url, secret_number];
+  // save the information
+  function setClassInfo(name, url, secret_number) {
+    var params = {};
+    params[name] = [url, secret_number];
 
-  storageArea.set(params, restore_options);
-}
-
-// Saves options to chrome.storage
-function save_options() {
-  var link = $('#link').val();
-  if(link.indexOf('.html') != -1) {
-    var arr = link.split('/'); arr.pop();
-    link = arr.join('/');  
+    storageArea.set(params, restore_options);
   }
-  
-  var name = $('#name').val();
-  var secret_number = $('#secret_number').val();
 
-  // save the class & clear the form
-  setClassInfo(name, link, secret_number)
-
-  $('#link').val('');
-  $('#name').val('');
-  $('#secret_number').val('');
-}
-
-// Restores select box and checkbox state using the preferences
-// stored in chrome.storage.
-function restore_options() {
-  $('#saved').empty();
-  // load all stored classes into table
-  storageArea.get(null, function(data) {
-    $('#saved_table').remove();
-    var $table = $('<table>').attr({'class': 'table table-bordered', 'id': 'saved_table'}).css({'width': '400px'});
-
-    var _count = 0;
-    for(var key in data) {
-      var $row = $('<tr>');
-
-      $row.append($('<td>').text(key));
-
-      var $del_link = $('<a>').text('Remove').attr({'href': '#', 'id': 'delete_' + key});
-      var $edit_link = $('<a>').text('Edit').attr({'href': '#', 'id': 'edit_' + key});
-
-      $row.append($('<td>').html($del_link));
-      $row.append($('<td>').html($edit_link));
-      $del_link.on('click', delete_class);
-      $edit_link.on('click', edit_class);
-
-      $table.append($row);
-      _count++;
+  // Saves options to chrome.storage
+  function save_options() {
+    var link = $('#link').val();
+    if(link.indexOf('.html') != -1) {
+      var arr = link.split('/'); arr.pop();
+      link = arr.join('/');
     }
+    
+    var name = $('#name').val();
+    var secret_number = $('#secret_number').val();
 
-    if(_count == 0) {
-      $('#saved').append($('<strong>').text('None saved. Add some!'));
-    }
+    // save the class & clear the form
+    setClassInfo(name, link, secret_number);
 
-    $('#saved').append($table);
-  });
-}
+    $('#link').val('');
+    $('#name').val('');
+    $('#secret_number').val('');
+    $('#add').text('Add Class');
 
-// delete the class. Used as callback for event listener
-function delete_class() {
-  var arr = $(this).attr('id').split('_');
-  var class_to_delete = arr.pop();
+  }
 
-  storageArea.remove(class_to_delete);
-  restore_options();
-}
+  // Restores select box and checkbox state using the preferences
+  // stored in chrome.storage.
+  function restore_options() {
+    $('#saved').empty();
+    // load all stored classes into table
+    storageArea.get(null, function(data) {
+      $('#saved_table').remove();
+      var $table = $('<table>').attr({'class': 'table table-bordered', 'id': 'saved_table'}).css({'width': '400px'});
 
-// edit the class. Used as callback for event listener
-function edit_class() {
-  var arr = $(this).attr('id').split('_');
-  var class_to_edit = arr.pop();
+      var _count = 0;
+      for(var key in data) {
+        var $row = $('<tr>');
 
-  storageArea.get(class_to_edit, function(data) {
-    var info = data[class_to_edit];
+        $row.append($('<td>').text(key));
 
-    $('#link').val(info[0]);
-    $('#name').val(class_to_edit);
-    $('#secret_number').val(info[1]);
-  });
-}
+        var $del_link = $('<a>').text('Remove').attr({'href': '#', 'id': 'delete_' + key});
+        var $edit_link = $('<a>').text('Edit').attr({'href': '#', 'id': 'edit_' + key});
 
-// on load, show user data & add event listeners
-$(function() {
+        $row.append($('<td>').html($del_link));
+        $row.append($('<td>').html($edit_link));
+        $del_link.on('click', delete_class);
+        $edit_link.on('click', edit_class);
+
+        $table.append($row);
+        _count++;
+      }
+
+      if(_count === 0) {
+        $('#saved').append($('<strong>').text('None saved. Add some!'));
+      }
+
+      $('#saved').append($table);
+    });
+  }
+
+  // delete the class. Used as callback for event listener
+  function delete_class() {
+    var arr = $(this).attr('id').split('_');
+    var class_to_delete = arr.pop();
+
+    storageArea.remove(class_to_delete);
+    restore_options();
+  }
+
+  // edit the class. Used as callback for event listener
+  function edit_class() {
+    var arr = $(this).attr('id').split('_');
+    var class_to_edit = arr.pop();
+
+    storageArea.get(class_to_edit, function(data) {
+      var info = data[class_to_edit];
+
+      $('#link').val(info[0]);
+      $('#name').val(class_to_edit);
+      $('#secret_number').val(info[1]);
+    });
+
+    $('#add').text('Update Class');
+  }
+
+  //show user data & add event listeners
   restore_options();
   $('#add').on('click', save_options);
-});
+
+})(jQuery);
