@@ -5,6 +5,7 @@
 	var mean_div = '#mean';
 	var median_div = "#median";
 	var grade_default = '--------';
+	var select_default = '-- Select Class --';
 
 	var Grades = Backbone.Model.extend({
 		defaults: {
@@ -14,8 +15,16 @@
 			url    : null
 		},
 
+		initialize: function() {
+			_.bindAll(this, 'getGrades');
+		},
+
 		getGrades: function(name) {
 			var self = this;
+			if(name == select_default) {
+				this.set(this.defaults);
+				return;
+			}
 			storageArea.get(name, function(items) {
 				var url = items[name][0];
 				var secret_number = items[name][1];
@@ -54,7 +63,7 @@
 			storageArea.get(null, function(data) {
 				var $dropdown = $('<select>');
 
-				$dropdown.append($('<option>').attr({value: ''}).text('-- Select Class --'));
+				$dropdown.append($('<option>').attr({value: select_default}).text(select_default));
 
 				_.each(data, function(value, key, list) {
 					var $option = $('<option>');
@@ -97,6 +106,9 @@
 					$overall.removeClass("good");
 					$overall.addClass("bad");
 				}
+			} else {
+				$overall.removeClass("bad");
+				$overall.removeClass("good");
 			}
 		},
 
