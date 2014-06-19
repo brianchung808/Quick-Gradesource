@@ -29,11 +29,7 @@ $(function() {
 		// load page with selected class
 		$dropdown.on('change', function() {
 			var _class = $(this).val();
-
 			loadPage(_class);
-			storageArea.get(_class, function(data) {
-
-			});
 		});
 	});
 });
@@ -45,7 +41,8 @@ function loadPage(name) {
 		var secret_number = items[name][1];
 
 		getOverall(url, secret_number, div, function(grade) {
-			$('#overall').text(grade);
+			var $overall = $('#overall');
+			$overall.text(grade);
 
 			// get the mean to compare with overall
 			jQuery.get(url + PAGES.stats, 
@@ -61,11 +58,11 @@ function loadPage(name) {
 							var mean = $(val).children().last().text();
 
 							if(parseFloat(grade.split('%')[0]) > parseFloat(mean)) {
-								$('#overall').removeClass("bad");
-								$('#overall').addClass("good");
+								$overall.removeClass("bad");
+								$overall.addClass("good");
 							} else {
-								$('#overall').removeClass("good");
-								$('#overall').addClass("bad");
+								$overall.removeClass("good");
+								$overall.addClass("bad");
 							}
 						}
 					});
@@ -73,8 +70,8 @@ function loadPage(name) {
 			);
 
 			// open course standings on click
-			$('#overall').off();
-			$('#overall').on('click', function() {
+			$overall.off();
+			$overall.on('click', function() {
 				chrome.tabs.create({url: url + PAGES.standings});
 			});
 		});
