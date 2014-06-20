@@ -13,34 +13,6 @@
 			mean   : grade_default,
 			median : grade_default,
 			url    : null
-		},
-
-		initialize: function() {
-			_.bindAll(this, 'getGrades');
-		},
-
-		getGrades: function(name) {
-			var self = this;
-			if(name == select_default) {
-				this.set(this.defaults);
-				return;
-			}
-			storageArea.get(name, function(items) {
-				var url = items[name][0];
-				var secret_number = items[name][1];
-				self.set('url', url);
-
-				getOverall(url, secret_number, div, function(grade) {
-					self.set('overall', grade);
-				});
-				
-				getMeanMedian(url, mean_div, median_div,
-					function meanCallback(mean) {
-						self.set('mean', mean);
-					}, function medianCallback(median) {
-						self.set('median', median);
-					});
-			});
 		}
 	});
 
@@ -53,7 +25,7 @@
 		},
 
 		initialize: function() {
-			_.bindAll(this, 'render', 'openGradesource');
+			_.bindAll(this, 'render', 'openGradesource', 'openGradesource', 'openOptions' ,'getGrades');
 
 			this.model = new Grades();
 			this.listenTo(this.model, 'change', this.render);
@@ -80,7 +52,7 @@
 				$dropdown.on('change', function() {
 					var _class = $(this).val();
 
-					self.model.getGrades(_class);
+					self.getGrades(_class);
 				});
 			});
 
@@ -110,6 +82,30 @@
 				$overall.removeClass("bad");
 				$overall.removeClass("good");
 			}
+		},
+
+		getGrades: function(name) {
+			var self = this;
+			if(name == select_default) {
+				this.model.set(this.model.defaults);
+				return;
+			}
+			storageArea.get(name, function(items) {
+				var url = items[name][0];
+				var secret_number = items[name][1];
+				self.model.set('url', url);
+
+				getOverall(url, secret_number, div, function(grade) {
+					self.model.set('overall', grade);
+				});
+				
+				getMeanMedian(url, mean_div, median_div,
+					function meanCallback(mean) {
+						self.model.set('mean', mean);
+					}, function medianCallback(median) {
+						self.model.set('median', median);
+					});
+			});
 		},
 
 		openGradesource: function() {
